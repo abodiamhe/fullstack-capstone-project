@@ -1,15 +1,58 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+import {urlConfig} from '../../config';
+import { useAppContext } from '../../context/AuthContext';
 
 import './RegisterPage.css';
 
 function RegisterPage() {
+    const navigate = useNavigate();
+    const { setIsLoggedIn } = useAppContext();
+
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [showerr, setShowerr] = useState('');
+ 
 
     const handleRegister = async () => {
-        console.log("Register invoked")
+        try {
+            const response = await fetch(`${urlConfig.backendUrl}/api/auth/register`, {
+                 method: 'POST',
+                 headers: {
+                    'Content-Type': 'application/json'
+                 },
+                 body: JSON.stringify({
+                        firstName: firstName,
+                        lastName: lastName,
+                        email: email,
+                        password: password
+                        })
+            })
+
+            if(!response.ok) {
+                return
+            }
+            const json = await response.json()
+            if (json.authtoken) {
+                sessionStorage.setItem('auth-token', json.authtoken);
+                sessionStorage.setItem('name', firstName);
+                sessionStorage.setItem('email', json.email);
+                //insert code for setting logged in state
+                setIsLoggedIn(true)
+                //insert code for navigating to MainPAge
+                navigate('/app')
+            }
+
+            if (json.error) {
+                setShowerr(json.error);
+            }                
+
+        } catch (e) {
+              console.log("Error fetching details: " + e.message);
+        }
     }
 
 return (
@@ -68,6 +111,7 @@ return (
                             onChange={(e) => setPassword(e.target.value)}
                         />
                     </div>
+                    <div className="text-danger">{showerr}</div>
                     <button className="btn btn-primary w-100 mb-3" onClick={handleRegister}>Register</button>
                     <p className="mt-4 text-center">
                         Already a member? <a href="/app/login" className="text-primary">Login</a>
