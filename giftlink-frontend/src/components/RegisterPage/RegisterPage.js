@@ -110,8 +110,8 @@ return (
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                         />
+                        <div className="text-danger">{showerr}</div>
                     </div>
-                    <div className="text-danger">{showerr}</div>
                     <button className="btn btn-primary w-100 mb-3" onClick={handleRegister}>Register</button>
                     <p className="mt-4 text-center">
                         Already a member? <a href="/app/login" className="text-primary">Login</a>
