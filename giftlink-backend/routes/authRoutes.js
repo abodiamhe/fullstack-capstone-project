@@ -1,3 +1,4 @@
+/*jshint esversion: 8 */
 const express = require('express');
 const bcryptjs = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -25,7 +26,7 @@ router.post('/register', async (req, res) => {
         if (existingEmail) {
             logger.error('Email id already exists');
             return res.status(400).json({ error: 'Email id already exists' });
-        }
+        };
 
         const salt = await bcryptjs.genSalt(10);
         const hash = await bcryptjs.hash(req.body.password, salt);
@@ -55,7 +56,7 @@ router.post('/register', async (req, res) => {
 });
 
 router.post('/login', async (req, res) => {
-    console.log("\n\n Inside login")
+    console.log("\n\n Inside login");
 
     try {
         // const collection = await connectToDatabase();
